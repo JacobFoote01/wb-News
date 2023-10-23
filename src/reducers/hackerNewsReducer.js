@@ -5,29 +5,26 @@ const initialState = {
     article: []
 }
 
-    const reducer = (state=initialState, action) => {
+const REQUEST_ARTICLES = 'REQUEST_ARTICLES'
+const PENDING = 'PENDING'
+
+export const requestArticles = async (dispatch) => {
+    dispatch({type: PENDING})
+    let articles = await axios.get('/api/hacker-news').then(res => res.data)
+    dispatch({ type: REQUEST_ARTICLES, payload: articles })
+}
+
+export default function hackerNewsReducer(state=initialState, action) {
        
-       switch (action.type) {
+    switch (action.type) {
 
-        case 'PENDING': 
-        let newState = {
-            ...state,
-            stillPending: ''
-        }
-        return newState
-
-        case 'REQUEST_ARTICLES': 
-        let requestState = {
-            ...state,
-            articleRequest: ''
-        }
-        return requestState
-        default:
-            console.log('hit default')
-            return state
+    case 'PENDING': 
+        return {...state, loading: true}
+        
+    case 'REQUEST_ARTICLES': 
+        return {...state, article: action.payload}
+    
+    default:
+        return state
         } 
     }
-
-
-
-export default reducer
